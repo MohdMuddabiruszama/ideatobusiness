@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Container } from '@/components/ui/Container';
-import { ArrowRight } from 'lucide-react';
-import { SITE_CONFIG } from '@/data/site';
+import { ArrowRight, Lightbulb, TrendingUp } from 'lucide-react';
 
 export function CTASection() {
   const [email, setEmail] = useState('');
@@ -16,47 +16,64 @@ export function CTASection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#0B2D1F] via-[#0e3d2a] to-[#081e14] py-16 sm:py-20 text-white">
-      {/* Background glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-brand-emerald/10 blur-[100px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+    <section className="bg-white py-8 sm:py-12">
+      <Container>
+        {/* Sleek Horizontal Banner Card matching Img 2 */}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-emerald-900/40 bg-gradient-to-r from-[#012217] via-[#022c1f] to-[#011c13] px-6 py-6 sm:px-8 sm:py-7 lg:px-10 lg:py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
 
-      <Container className="relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="text-5xl mb-4">💡</div>
+          {/* Background Ambient Glows & Vector Waves */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(0,229,153,0.18)_0%,transparent_60%)] pointer-events-none" />
+          <div className="absolute right-10 top-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-amber-400/15 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-10 right-1/4 w-60 h-60 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-            Ready to Turn Your{' '}
-            <span className="text-brand-emerald">Idea</span> Into Reality?
-          </h2>
+          {/* Left Column: Heading & Subtitle */}
+          <div className="relative z-10 text-center lg:text-left max-w-xl">
+            <h2 className="text-xl sm:text-2xl lg:text-[1.65rem] font-extrabold text-white tracking-tight leading-snug drop-shadow-sm">
+              Ready to Turn{' '}
+              <span className="text-[#00E599] font-black">Your Idea Into</span>{' '}
+              Reality?
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-200/95 font-normal leading-relaxed drop-shadow-xs">
+              Get personalised guidance from our team and take the first step today.
+            </p>
+          </div>
 
-          <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-            Get personalised guidance from our team and take the first step today.
-          </p>
-
-          {/* Email CTA bar */}
+          {/* Center Column: Unified Search Pill Bar (White Box + Attached Green Button) */}
           <form
             onSubmit={handleSubmit}
-            className="mt-8 flex flex-col sm:flex-row items-center gap-3 max-w-lg mx-auto"
+            className="relative z-10 w-full lg:w-auto flex-1 max-w-md flex items-center rounded-2xl bg-white p-1 sm:p-1.5 shadow-xl border border-white/20 transition-all focus-within:ring-2 focus-within:ring-[#00E599]"
           >
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
-              className="flex-1 w-full rounded-xl border border-white/20 bg-white/10 backdrop-blur text-white placeholder:text-slate-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-emerald"
+              required
+              className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 bg-transparent focus:outline-none"
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-emerald hover:bg-emerald-400 text-white font-bold text-sm px-7 py-3.5 shadow-lg transition-all hover:scale-[1.02] whitespace-nowrap"
+              className="shrink-0 bg-[#00E599] hover:bg-[#00c985] text-slate-950 font-black text-xs sm:text-sm px-5 sm:px-6 py-2.5 rounded-xl shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5 whitespace-nowrap"
             >
-              Get Started <ArrowRight className="w-4 h-4" />
+              <span>Get Started</span>
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </form>
 
-          <p className="mt-4 text-xs text-slate-500">
-            No obligation · We respond within 24 business hours
-          </p>
+          {/* Right Column: 3D Glowing Bulb + Upward Growth Graphic */}
+          <div className="relative z-10 hidden md:flex items-center justify-end shrink-0 -my-2 lg:-my-4">
+            <div className="relative h-18 w-36 lg:h-20 lg:w-44 flex items-center justify-end">
+              <Image
+                src="/images/cta-bulb-growth.png"
+                alt="Glowing lightbulb and green growth chart"
+                fill
+                priority
+                className="object-contain object-right drop-shadow-[0_0_20px_rgba(251,191,36,0.35)]"
+                sizes="176px"
+              />
+            </div>
+          </div>
+
         </div>
       </Container>
     </section>
