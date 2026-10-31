@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
-import { ArrowRight, Plus, Minus, FileText } from 'lucide-react';
+import { ArrowRight, Plus, Minus, HelpCircle } from 'lucide-react';
 
 const FAQS_LIST = [
   {
@@ -40,10 +40,10 @@ export function FAQPreview() {
   };
 
   return (
-    <section className="bg-white py-14 sm:py-20 border-b border-slate-100">
+    <section className="bg-white py-16 sm:py-20 border-b border-slate-100">
       <Container>
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-9">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-brand-emerald mb-2">
               FREQUENTLY ASKED QUESTIONS
@@ -51,45 +51,45 @@ export function FAQPreview() {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-deep leading-tight">
               Got Questions? We&apos;ve Got Answers.
             </h2>
-            <p className="mt-1.5 text-[#4B5563] text-sm sm:text-base max-w-2xl">
+            <p className="mt-2 text-[#4B5563] text-sm sm:text-base max-w-2xl">
               Find answers to common questions about our services, process and support.
             </p>
           </div>
           <Link
             href="/faq"
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-brand-emerald hover:border-brand-emerald whitespace-nowrap transition-colors shrink-0"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-emerald hover:text-brand-deep whitespace-nowrap transition-colors shrink-0"
           >
-            View All FAQs <ArrowRight className="w-3.5 h-3.5" />
+            View All FAQs <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         {/* Accordions */}
-        <div className="max-w-4xl mx-auto space-y-2.5">
+        <div className="max-w-4xl mx-auto space-y-3">
           {FAQS_LIST.map((faq) => {
             const isOpen = openId === faq.id;
             return (
               <div
                 key={faq.id}
-                className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden transition-all duration-150"
+                className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden transition-all duration-200"
               >
                 <button
                   type="button"
                   onClick={() => toggle(faq.id)}
-                  className="w-full flex items-center justify-between p-4 sm:p-5 text-left font-bold text-xs sm:text-sm text-brand-deep hover:text-brand-emerald transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left font-bold text-sm sm:text-base text-brand-deep hover:text-brand-emerald transition-colors"
                   aria-expanded={isOpen}
                 >
-                  <span className="flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span className="flex items-center gap-3">
+                    <HelpCircle className="w-4 h-4 text-brand-emerald shrink-0" />
                     {faq.question}
                   </span>
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 text-slate-500 shrink-0 ml-3">
-                    {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-500 shrink-0 ml-4">
+                    {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   </span>
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-1 text-xs text-[#4B5563] leading-relaxed border-t border-slate-100/80 animate-in fade-in duration-150">
-                    <p className="pl-6">{faq.answer}</p>
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#4B5563] leading-relaxed border-t border-slate-100/60 animate-in fade-in duration-200">
+                    <p className="pl-7">{faq.answer}</p>
                   </div>
                 )}
               </div>
