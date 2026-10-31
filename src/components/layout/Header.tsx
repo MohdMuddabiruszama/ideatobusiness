@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown, ArrowRight, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MAIN_NAVIGATION } from '@/data/navigation';
+import { Logo } from '@/components/ui/Logo';
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -65,17 +65,8 @@ export function Header() {
           <div className="flex h-16 sm:h-20 items-center justify-between gap-4">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0">
-              <div className="relative h-10 w-40 sm:h-12 sm:w-48">
-                <Image
-                  src="/logos/logo-header.png"
-                  alt="IDEATOBUSINESS — Your Business Journey, Simplified"
-                  fill
-                  priority
-                  className="object-contain object-left"
-                  sizes="(max-width: 640px) 160px, 200px"
-                />
-              </div>
+            <Link href="/" className="flex items-center shrink-0" aria-label="IDEATOBUSINESS - Your Business Journey, Simplified">
+              <Logo variant="dark" size="md" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -216,14 +207,9 @@ export function Header() {
           <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-250">
             {/* Header */}
             <div className="flex items-center justify-between px-5 h-16 border-b border-slate-100">
-              <div className="relative h-9 w-36">
-                <Image
-                  src="/logos/logo-header.png"
-                  alt="IDEATOBUSINESS — Your Business Journey, Simplified"
-                  fill
-                  className="object-contain object-left"
-                />
-              </div>
+              <Link href="/" onClick={() => setMobileOpen(false)} aria-label="IDEATOBUSINESS">
+                <Logo variant="dark" size="sm" />
+              </Link>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="p-2 text-slate-700 hover:bg-slate-100 rounded-lg"

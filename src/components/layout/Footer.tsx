@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Container } from '@/components/ui/Container';
 import { ArrowRight, Check, Send } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 
 const QUICK_LINKS = [
   { label: 'Home', href: '/' },
@@ -62,16 +62,8 @@ export function Footer() {
 
             {/* Brand Column (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
-              <Link href="/" className="inline-block">
-                <div className="relative h-12 w-52">
-                  <Image
-                    src="/logos/logo-footer.png"
-                    alt="IDEATOBUSINESS — Your Business Journey, Simplified"
-                    fill
-                    className="object-contain object-left"
-                    sizes="220px"
-                  />
-                </div>
+              <Link href="/" className="inline-block" aria-label="IDEATOBUSINESS - Your Business Journey, Simplified">
+                <Logo variant="light" size="md" />
               </Link>
               <p className="text-sm text-slate-300 leading-relaxed max-w-sm">
                 We help individuals and businesses turn their ideas into real businesses with the right strategy, branding, technology and ongoing support.
