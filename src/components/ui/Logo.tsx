@@ -20,22 +20,22 @@ export function Logo({
   // Sizing definitions tuned for maximum readability and visual balance
   const sizeMap = {
     sm: {
-      icon: 'h-8 w-8',
-      title: 'text-[17px]',
-      tagline: 'text-[8.5px] tracking-[0.14em] mt-0.5',
+      icon: 'h-7 w-7',
+      title: 'text-[15px]',
+      tagline: 'text-[7.5px] tracking-[0.11em] mt-0.5',
       gap: 'gap-2',
     },
     md: {
-      icon: 'h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12',
-      title: 'text-[19px] sm:text-[22px] md:text-[24px]',
-      tagline: 'text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.17em] mt-1',
-      gap: 'gap-2.5 sm:gap-3',
+      icon: 'h-9 w-9 sm:h-10 sm:w-10',
+      title: 'text-[18px]',
+      tagline: 'text-[9px] tracking-[0.12em] mt-0.5',
+      gap: 'gap-2.5',
     },
     lg: {
-      icon: 'h-14 w-14 sm:h-16 sm:w-16',
-      title: 'text-2xl sm:text-3xl',
-      tagline: 'text-[11px] sm:text-xs tracking-[0.2em] mt-1.5',
-      gap: 'gap-3.5',
+      icon: 'h-12 w-12 sm:h-14 sm:w-14',
+      title: 'text-[24px] sm:text-[28px]',
+      tagline: 'text-[11px] sm:text-xs tracking-[0.16em] mt-1',
+      gap: 'gap-3',
     },
   };
 
