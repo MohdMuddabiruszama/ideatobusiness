@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
 import { PlatformLogosBar } from '@/components/home/PlatformLogosBar';
@@ -13,6 +13,10 @@ import {
   ShoppingCart,
   TrendingUp,
   Lightbulb,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 
 const FLOATING_SERVICES = [
@@ -51,6 +55,28 @@ const MINI_STATS = [
 ];
 
 export function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    videoRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
   return (
     <>
       {/* ── HERO MAIN SECTION ── */}
@@ -130,45 +156,100 @@ export function HeroSection() {
                     <span className="text-brand-emerald">Growth</span>
                   </div>
 
-                  {/* Central Graphic / Video Container */}
-                  <div className="relative h-56 sm:h-64 rounded-2xl bg-gradient-to-br from-[#0B2D1F] via-[#103D2A] to-[#0B2D1F] flex flex-col items-center justify-center text-center p-6 text-white overflow-hidden shadow-inner group">
-                    {/* Video Layer (Drop video file into public/videos/hero-journey.mp4) */}
+                  {/* Central Video Container */}
+                  <div
+                    onClick={togglePlay}
+                    className="relative h-60 sm:h-72 rounded-2xl bg-[#0B2D1F] overflow-hidden shadow-2xl border border-emerald-900/40 cursor-pointer group select-none"
+                  >
+                    {/* Video Element */}
                     <video
+                      ref={videoRef}
                       autoPlay
                       loop
                       muted
                       playsInline
                       preload="auto"
-                      className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-300"
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                      className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-500 group-hover:scale-[1.02]"
                     >
+                      <source src="/videos/web-hero-video.mp4" type="video/mp4" />
+                      <source src="/videos/web hero video.mp4" type="video/mp4" />
                       <source src="/videos/hero-journey.mp4" type="video/mp4" />
-                      <source src="/videos/start-journey.mp4" type="video/mp4" />
                     </video>
 
-                    {/* Subtle Dark Gradient Overlay for Crisp Text Contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B2D1F]/85 via-[#0B2D1F]/35 to-black/25 z-10 pointer-events-none" />
+                    {/* Subtle Gradient Overlays for High Contrast Readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/35 pointer-events-none z-10" />
 
-                    {/* Top Scale Up Badge */}
-                    <div className="absolute top-3 right-3 text-emerald-300 text-xs font-bold flex items-center gap-1 z-20 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full border border-emerald-500/20">
-                      <TrendingUp className="w-3.5 h-3.5 text-emerald-400" /> Scale Up
-                    </div>
-
-                    {/* Center Overlay Content */}
-                    <div className="relative z-20 flex flex-col items-center justify-center">
-                      {/* Glowing golden bulb */}
-                      <div className="relative mb-3">
-                        <div className="absolute inset-0 bg-amber-400 rounded-full blur-xl opacity-60 animate-pulse" />
-                        <div className="relative flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-brand-deep shadow-lg">
-                          <Lightbulb className="w-8 h-8 sm:w-9 sm:h-9 fill-amber-300 stroke-brand-deep stroke-[1.5]" />
-                        </div>
+                    {/* Top Bar Badges */}
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-none">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0B2D1F]/80 backdrop-blur-md border border-emerald-500/30 text-[11px] font-bold text-white shadow-sm">
+                        <span className="flex h-2 w-2 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span>Idea to Reality</span>
                       </div>
 
-                      <p className="text-base sm:text-lg font-bold text-white tracking-wide drop-shadow-sm">
-                        Start Your Journey
-                      </p>
-                      <p className="text-xs text-emerald-200/95 mt-1 drop-shadow-xs">
-                        Guided by business strategy specialists
-                      </p>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-xs font-semibold text-emerald-300">
+                        <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Scale Up</span>
+                      </div>
+                    </div>
+
+                    {/* Center Play Button Overlay (visible when paused) */}
+                    {!isPlaying && (
+                      <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/40 backdrop-blur-[2px] transition-all">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-emerald text-white shadow-2xl transform transition hover:scale-110">
+                          <Play className="w-7 h-7 fill-white translate-x-0.5" />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Bottom Floating Bar with Details & Audio/Play Controls */}
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20">
+                      <div className="pointer-events-none pr-2">
+                        <p className="text-sm sm:text-base font-extrabold text-white tracking-wide leading-tight drop-shadow-md">
+                          Start Your Journey
+                        </p>
+                        <p className="text-[11px] text-emerald-200/90 font-medium leading-tight drop-shadow-sm mt-0.5">
+                          Guided by business strategy specialists
+                        </p>
+                      </div>
+
+                      {/* Interactive Controls (Play/Pause & Sound) */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={toggleMute}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-105 active:scale-95"
+                          aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+                          title={isMuted ? 'Unmute audio' : 'Mute audio'}
+                        >
+                          {isMuted ? (
+                            <VolumeX className="w-4 h-4 text-amber-300" />
+                          ) : (
+                            <Volume2 className="w-4 h-4 text-emerald-400" />
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePlay();
+                          }}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-emerald/90 hover:bg-brand-emerald text-white backdrop-blur-md shadow-md transition-all hover:scale-105 active:scale-95"
+                          aria-label={isPlaying ? 'Pause video' : 'Play video'}
+                          title={isPlaying ? 'Pause' : 'Play'}
+                        >
+                          {isPlaying ? (
+                            <Pause className="w-4 h-4 fill-white" />
+                          ) : (
+                            <Play className="w-4 h-4 fill-white translate-x-0.5" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
