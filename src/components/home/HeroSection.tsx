@@ -130,26 +130,45 @@ export function HeroSection() {
                     <span className="text-brand-emerald">Growth</span>
                   </div>
 
-                  {/* Central Graphic Container */}
-                  <div className="relative h-56 sm:h-60 rounded-2xl bg-gradient-to-br from-[#0B2D1F] via-[#103D2A] to-[#0B2D1F] flex flex-col items-center justify-center text-center p-6 text-white overflow-hidden shadow-inner">
-                    {/* Glowing golden bulb */}
-                    <div className="relative mb-3">
-                      <div className="absolute inset-0 bg-amber-400 rounded-full blur-xl opacity-60 animate-pulse" />
-                      <div className="relative flex h-18 w-18 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-brand-deep shadow-lg">
-                        <Lightbulb className="w-9 h-9 sm:w-10 sm:h-10 fill-amber-300 stroke-brand-deep stroke-[1.5]" />
-                      </div>
+                  {/* Central Graphic / Video Container */}
+                  <div className="relative h-56 sm:h-64 rounded-2xl bg-gradient-to-br from-[#0B2D1F] via-[#103D2A] to-[#0B2D1F] flex flex-col items-center justify-center text-center p-6 text-white overflow-hidden shadow-inner group">
+                    {/* Video Layer (Drop video file into public/videos/hero-journey.mp4) */}
+                    <video
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-300"
+                    >
+                      <source src="/videos/hero-journey.mp4" type="video/mp4" />
+                      <source src="/videos/start-journey.mp4" type="video/mp4" />
+                    </video>
+
+                    {/* Subtle Dark Gradient Overlay for Crisp Text Contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B2D1F]/85 via-[#0B2D1F]/35 to-black/25 z-10 pointer-events-none" />
+
+                    {/* Top Scale Up Badge */}
+                    <div className="absolute top-3 right-3 text-emerald-300 text-xs font-bold flex items-center gap-1 z-20 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full border border-emerald-500/20">
+                      <TrendingUp className="w-3.5 h-3.5 text-emerald-400" /> Scale Up
                     </div>
 
-                    <p className="text-base sm:text-lg font-bold text-white tracking-wide">
-                      Start Your Journey
-                    </p>
-                    <p className="text-xs text-emerald-200/90 mt-1">
-                      Guided by business strategy specialists
-                    </p>
+                    {/* Center Overlay Content */}
+                    <div className="relative z-20 flex flex-col items-center justify-center">
+                      {/* Glowing golden bulb */}
+                      <div className="relative mb-3">
+                        <div className="absolute inset-0 bg-amber-400 rounded-full blur-xl opacity-60 animate-pulse" />
+                        <div className="relative flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-brand-deep shadow-lg">
+                          <Lightbulb className="w-8 h-8 sm:w-9 sm:h-9 fill-amber-300 stroke-brand-deep stroke-[1.5]" />
+                        </div>
+                      </div>
 
-                    {/* Green growth arrow illustration badge */}
-                    <div className="absolute top-3 right-3 text-emerald-400 text-xs font-bold flex items-center gap-1">
-                      <TrendingUp className="w-4 h-4" /> Scale Up
+                      <p className="text-base sm:text-lg font-bold text-white tracking-wide drop-shadow-sm">
+                        Start Your Journey
+                      </p>
+                      <p className="text-xs text-emerald-200/95 mt-1 drop-shadow-xs">
+                        Guided by business strategy specialists
+                      </p>
                     </div>
                   </div>
 
