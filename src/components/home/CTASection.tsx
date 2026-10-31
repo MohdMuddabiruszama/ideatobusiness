@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Container } from '@/components/ui/Container';
-import { ArrowRight } from 'lucide-react';
-import { SITE_CONFIG } from '@/data/site';
+import { ArrowRight, Lightbulb } from 'lucide-react';
 
 export function CTASection() {
   const [email, setEmail] = useState('');
@@ -16,47 +16,62 @@ export function CTASection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#0B2D1F] via-[#0e3d2a] to-[#081e14] py-16 sm:py-20 text-white">
-      {/* Background glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-brand-emerald/10 blur-[100px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden bg-[#0B2D1F] py-14 sm:py-18 text-white border-t border-emerald-950">
+      {/* Background glow effects */}
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 rounded-full bg-brand-emerald/15 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-80 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
 
       <Container className="relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="text-5xl mb-4">💡</div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-            Ready to Turn Your{' '}
-            <span className="text-brand-emerald">Idea</span> Into Reality?
-          </h2>
+          {/* Left Text & Form (8 cols) */}
+          <div className="lg:col-span-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
+              Ready to Turn <span className="text-brand-emerald">Your Idea</span> into <span className="text-amber-400">Reality?</span>
+            </h2>
 
-          <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-            Get personalised guidance from our team and take the first step today.
-          </p>
+            <p className="mt-2.5 text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
+              Get personalized guidance from our team and take the first step today.
+            </p>
 
-          {/* Email CTA bar */}
-          <form
-            onSubmit={handleSubmit}
-            className="mt-8 flex flex-col sm:flex-row items-center gap-3 max-w-lg mx-auto"
-          >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email address"
-              className="flex-1 w-full rounded-xl border border-white/20 bg-white/10 backdrop-blur text-white placeholder:text-slate-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-emerald"
-            />
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-emerald hover:bg-emerald-400 text-white font-bold text-sm px-7 py-3.5 shadow-lg transition-all hover:scale-[1.02] whitespace-nowrap"
+            {/* Email form */}
+            <form
+              onSubmit={handleSubmit}
+              className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 max-w-lg"
             >
-              Get Started <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
+                required
+                className="flex-1 rounded-xl border border-white/20 bg-white/10 backdrop-blur text-white placeholder:text-slate-400 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-brand-emerald"
+              />
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-emerald hover:bg-emerald-600 text-white font-semibold text-sm px-6 py-3 shadow transition-all hover:scale-[1.01] whitespace-nowrap"
+              >
+                Get Started <ArrowRight className="w-4 h-4" />
+              </button>
+            </form>
+          </div>
 
-          <p className="mt-4 text-xs text-slate-500">
-            No obligation · We respond within 24 business hours
-          </p>
+          {/* Right Glowing Lightbulb graphic (4 cols) */}
+          <div className="lg:col-span-4 flex justify-center lg:justify-end">
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-amber-400/30 rounded-full blur-2xl scale-125" />
+              <div className="relative h-28 w-28 sm:h-36 sm:w-36">
+                <Image
+                  src="/icons/Glossy Golden Lightbulb Icon.png"
+                  alt="Idea to Reality"
+                  fill
+                  className="object-contain drop-shadow-[0_10px_25px_rgba(245,158,11,0.5)]"
+                  sizes="150px"
+                />
+              </div>
+            </div>
+          </div>
+
         </div>
       </Container>
     </section>

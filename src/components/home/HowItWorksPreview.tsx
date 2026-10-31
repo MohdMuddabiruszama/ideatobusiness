@@ -1,51 +1,50 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Container } from '@/components/ui/Container';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Lightbulb, Map, CheckSquare, Users, Rocket } from 'lucide-react';
 
 const STEPS = [
   {
     num: 1,
-    icon: '💡',
+    icon: <Lightbulb className="w-5 h-5 text-white" />,
     title: 'Tell Us Your Idea',
     desc: 'Share your business goal and requirements.',
-    color: 'bg-brand-emerald',
+    color: 'bg-emerald-600',
   },
   {
     num: 2,
-    icon: '🗺️',
+    icon: <Map className="w-5 h-5 text-white" />,
     title: 'Get Your Roadmap',
     desc: 'We suggest the best plan and services for you.',
     color: 'bg-amber-500',
   },
   {
     num: 3,
-    icon: '✅',
+    icon: <CheckSquare className="w-5 h-5 text-white" />,
     title: 'Choose Services',
     desc: 'Select the services you need.',
-    color: 'bg-blue-500',
+    color: 'bg-blue-600',
   },
   {
     num: 4,
-    icon: '🤝',
+    icon: <Users className="w-5 h-5 text-white" />,
     title: 'Work With Our Team',
     desc: 'Our experts handle the work.',
-    color: 'bg-purple-500',
+    color: 'bg-orange-500',
   },
   {
     num: 5,
-    icon: '🚀',
+    icon: <Rocket className="w-5 h-5 text-white" />,
     title: 'Launch & Grow',
     desc: 'Start your business and get ongoing support.',
-    color: 'bg-rose-500',
+    color: 'bg-teal-600',
   },
 ];
 
-const GROWTH_STEPS = ['PLAN', 'BUILD', 'LAUNCH', 'GROW'];
-
 export function HowItWorksPreview() {
   return (
-    <section className="bg-[#F8FAF9] py-16 sm:py-20 overflow-hidden">
+    <section className="bg-[#F8FAF9] py-16 sm:py-20 border-b border-slate-100 overflow-hidden">
       <Container>
         {/* Header */}
         <div className="mb-10">
@@ -58,29 +57,29 @@ export function HowItWorksPreview() {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-10 items-start">
-          {/* ── Steps ── */}
-          <div className="flex-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Steps (8 cols) */}
+          <div className="lg:col-span-8">
             {/* Desktop: horizontal flow */}
-            <div className="hidden md:flex items-start gap-0 relative">
+            <div className="hidden md:flex items-start justify-between gap-1 relative">
               {STEPS.map((step, i) => (
                 <React.Fragment key={step.num}>
-                  <div className="flex flex-col items-center text-center flex-1 min-w-0 px-2">
-                    {/* Circle */}
-                    <div className={`flex h-14 w-14 items-center justify-center rounded-full ${step.color} text-white font-extrabold text-lg shadow-lg mb-3 shrink-0`}>
+                  <div className="flex flex-col items-center text-center flex-1 min-w-0 px-1">
+                    {/* Circle icon */}
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-full ${step.color} shadow-md mb-2.5 shrink-0`}>
                       {step.icon}
                     </div>
                     {/* Step number badge */}
-                    <span className={`text-[10px] font-bold text-white ${step.color} rounded-full px-2 py-0.5 mb-2`}>
-                      Step {step.num}
+                    <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 rounded-full px-2 py-0.5 mb-1.5">
+                      {step.num}
                     </span>
-                    <h3 className="text-sm font-bold text-brand-deep leading-snug">{step.title}</h3>
-                    <p className="mt-1 text-[11px] text-[#6B7280] leading-relaxed">{step.desc}</p>
+                    <h3 className="text-xs sm:text-sm font-bold text-brand-deep leading-tight">{step.title}</h3>
+                    <p className="mt-1 text-[11px] text-[#6B7280] leading-snug">{step.desc}</p>
                   </div>
                   {/* Arrow connector */}
                   {i < STEPS.length - 1 && (
-                    <div className="flex items-start pt-7 shrink-0 text-slate-300">
-                      <ArrowRight className="w-5 h-5" />
+                    <div className="flex items-start pt-5 shrink-0 text-slate-300">
+                      <ArrowRight className="w-4 h-4" />
                     </div>
                   )}
                 </React.Fragment>
@@ -88,16 +87,16 @@ export function HowItWorksPreview() {
             </div>
 
             {/* Mobile: vertical list */}
-            <div className="flex flex-col gap-4 md:hidden">
+            <div className="flex flex-col gap-3 md:hidden">
               {STEPS.map((step) => (
-                <div key={step.num} className="flex items-start gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-100">
-                  <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${step.color} text-white text-xl shrink-0 shadow`}>
+                <div key={step.num} className="flex items-start gap-3.5 rounded-2xl bg-white p-4 shadow-sm border border-slate-100">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${step.color} shrink-0 shadow-sm`}>
                     {step.icon}
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Step {step.num}</p>
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Step {step.num}</span>
                     <h3 className="text-sm font-bold text-brand-deep mt-0.5">{step.title}</h3>
-                    <p className="text-xs text-[#6B7280] mt-1 leading-relaxed">{step.desc}</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5 leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               ))}
@@ -106,29 +105,26 @@ export function HowItWorksPreview() {
             <div className="mt-8">
               <Link
                 href="/how-it-works"
-                className="inline-flex items-center gap-2 rounded-xl bg-brand-emerald hover:bg-emerald-500 text-white font-bold text-sm px-6 py-3 shadow transition-all hover:scale-[1.02]"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-emerald hover:bg-emerald-600 text-white font-semibold text-xs sm:text-sm px-6 py-2.5 shadow-sm transition-all hover:scale-[1.01]"
               >
                 See Full Process <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
 
-          {/* ── Right: PLAN BUILD LAUNCH GROW ── */}
-          <div className="hidden lg:flex flex-col gap-2 shrink-0 w-36">
-            {GROWTH_STEPS.map((label, i) => (
-              <div
-                key={label}
-                className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold text-white shadow-sm ${
-                  i === 0 ? 'bg-blue-500' :
-                  i === 1 ? 'bg-brand-emerald' :
-                  i === 2 ? 'bg-amber-500' :
-                  'bg-brand-deep'
-                }`}
-              >
-                {label}
-                <ArrowRight className="w-4 h-4 opacity-70" />
+          {/* Right visual: 3D Stairs with Plan, Build, Launch, Grow (4 cols) */}
+          <div className="lg:col-span-4 flex justify-center">
+            <div className="relative w-full max-w-sm rounded-2xl overflow-hidden shadow-md border border-slate-100 bg-white group">
+              <div className="relative w-full h-[200px] sm:h-[230px]">
+                <Image
+                  src="/images/process-stairs.jpg"
+                  alt="Business Growth Process - Plan, Build, Launch, Grow"
+                  fill
+                  className="object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
+                  sizes="(max-width: 1024px) 100vw, 380px"
+                />
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </Container>

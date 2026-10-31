@@ -65,7 +65,7 @@ export function Footer() {
               <Link href="/" className="inline-block">
                 <div className="relative h-11 w-48">
                   <Image
-                    src="/logos/Light logo.png"
+                    src="/logos/logo-dark-transparent.png"
                     alt="IDEATOBUSINESS Logo"
                     fill
                     className="object-contain object-left"

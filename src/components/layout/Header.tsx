@@ -55,31 +55,29 @@ export function Header() {
     <>
       <header
         className={cn(
-          'sticky top-0 left-0 right-0 z-50 transition-all duration-300',
-          scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200/80'
-            : 'bg-white border-b border-slate-100'
+          'sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-white',
+          scrolled ? 'shadow-sm border-b border-slate-200/80' : 'border-b border-slate-100'
         )}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 sm:h-20 items-center justify-between gap-4">
 
-            {/* Logo */}
+            {/* Logo - completely transparent PNG with zero background artifact */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-              <div className="relative h-10 w-44 sm:h-12 sm:w-52">
+              <div className="relative h-10 w-44 sm:h-12 sm:w-56">
                 <Image
-                  src="/logos/Dark logo.png"
+                  src="/logos/logo-transparent.png"
                   alt="IDEATOBUSINESS Logo"
                   fill
                   priority
                   className="object-contain object-left"
-                  sizes="(max-width: 640px) 180px, 220px"
+                  sizes="(max-width: 640px) 180px, 230px"
                 />
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
               {MAIN_NAVIGATION.map((item) => (
                 <div
                   key={item.href}
@@ -90,10 +88,10 @@ export function Header() {
                   <Link
                     href={item.href}
                     className={cn(
-                      'flex items-center gap-1 px-3 py-2 text-sm font-semibold rounded-lg transition-colors',
+                      'flex items-center gap-1 px-3 py-1.5 text-[14px] font-medium rounded-full transition-colors',
                       isActive(item.href)
-                        ? 'text-brand-emerald bg-emerald-50/80 font-bold'
-                        : 'text-neutral-navy hover:text-brand-emerald hover:bg-slate-50'
+                        ? 'text-brand-deep font-semibold bg-emerald-50/80 text-emerald-800'
+                        : 'text-slate-700 hover:text-brand-emerald hover:bg-slate-50'
                     )}
                   >
                     {item.label}
@@ -147,15 +145,15 @@ export function Header() {
 
             {/* Desktop Actions (Search + CTA) */}
             <div className="flex items-center gap-3">
-              {/* Search toggle */}
+              {/* Search Icon */}
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className="p-2 text-neutral-navy hover:text-brand-emerald hover:bg-slate-100 rounded-full transition-colors"
+                  className="p-2 text-slate-700 hover:text-brand-emerald hover:bg-slate-100 rounded-full transition-colors"
                   aria-label="Search services"
                 >
-                  <Search className="w-5 h-5" />
+                  <Search className="w-5 h-5 stroke-[1.8]" />
                 </button>
 
                 {searchOpen && (
@@ -186,7 +184,7 @@ export function Header() {
               {/* Get Started Button */}
               <Link
                 href="/get-started"
-                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-brand-emerald hover:bg-emerald-600 text-white font-bold text-sm px-5 py-2.5 shadow-sm shadow-emerald-900/15 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-brand-emerald hover:bg-emerald-600 text-white font-semibold text-sm px-5 py-2.5 shadow-sm shadow-emerald-900/15 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>Get Started</span>
                 <ArrowRight className="w-4 h-4" />
@@ -218,7 +216,7 @@ export function Header() {
             <div className="flex items-center justify-between px-5 h-16 border-b border-slate-100">
               <div className="relative h-9 w-36">
                 <Image
-                  src="/logos/Dark logo.png"
+                  src="/logos/logo-transparent.png"
                   alt="IDEATOBUSINESS Logo"
                   fill
                   className="object-contain object-left"
