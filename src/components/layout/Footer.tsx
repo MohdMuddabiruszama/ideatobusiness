@@ -63,13 +63,13 @@ export function Footer() {
             {/* Brand Column (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
               <Link href="/" className="inline-block">
-                <div className="relative h-11 w-48">
+                <div className="relative h-12 w-52">
                   <Image
-                    src="/logos/Light logo.png"
-                    alt="IDEATOBUSINESS Logo"
+                    src="/logos/logo-footer.png"
+                    alt="IDEATOBUSINESS — Your Business Journey, Simplified"
                     fill
                     className="object-contain object-left"
-                    sizes="200px"
+                    sizes="220px"
                   />
                 </div>
               </Link>

@@ -66,14 +66,14 @@ export function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-              <div className="relative h-10 w-44 sm:h-12 sm:w-52">
+              <div className="relative h-10 w-40 sm:h-12 sm:w-48">
                 <Image
-                  src="/logos/Dark logo.png"
-                  alt="IDEATOBUSINESS Logo"
+                  src="/logos/logo-header.png"
+                  alt="IDEATOBUSINESS — Your Business Journey, Simplified"
                   fill
                   priority
                   className="object-contain object-left"
-                  sizes="(max-width: 640px) 180px, 220px"
+                  sizes="(max-width: 640px) 160px, 200px"
                 />
               </div>
             </Link>
@@ -218,8 +218,8 @@ export function Header() {
             <div className="flex items-center justify-between px-5 h-16 border-b border-slate-100">
               <div className="relative h-9 w-36">
                 <Image
-                  src="/logos/Dark logo.png"
-                  alt="IDEATOBUSINESS Logo"
+                  src="/logos/logo-header.png"
+                  alt="IDEATOBUSINESS — Your Business Journey, Simplified"
                   fill
                   className="object-contain object-left"
                 />
