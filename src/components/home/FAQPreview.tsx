@@ -1,41 +1,102 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
-import { SectionHeading } from '@/components/ui/SectionHeading';
-import { Accordion } from '@/components/ui/Accordion';
-import { FAQS } from '@/data/faqs';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Plus, Minus, HelpCircle } from 'lucide-react';
+
+const FAQS_LIST = [
+  {
+    id: 'faq-1',
+    question: 'What services does IDEATOBUSINESS provide?',
+    answer:
+      'We provide end-to-end support across 5 departments: Business Launch (registration, GST, UDYAM, compliance), Branding & Design (logos, packaging, creative assets), Website & Technology (corporate sites, e-commerce stores, apps), Marketplace Selling (Meesho, Amazon, Flipkart setup & management), and Marketing & Growth (social media, SEO, paid ads).',
+  },
+  {
+    id: 'faq-2',
+    question: 'How much do the services cost?',
+    answer:
+      'We offer modular pricing and packages starting from ₹999 for foundational advisory, ₹4,999 for complete Business Launch setups, up to full-scale digital enterprise packages. All government statutory fees and third-party charges are itemized transparently with zero hidden costs.',
+  },
+  {
+    id: 'faq-3',
+    question: 'How long does it take to start a business?',
+    answer:
+      'Standard business registrations and digital identity setups typically begin within 24-48 hours. Most businesses have their foundation, brand identity, and basic digital presence ready within 7 to 14 business days, depending on government processing timelines.',
+  },
+  {
+    id: 'faq-4',
+    question: 'Do you help with Meesho, Amazon and Flipkart?',
+    answer:
+      'Yes, absolutely! We handle end-to-end seller onboarding, GST mapping, brand registry, product cataloguing, high-converting listing creation, pricing strategies, and order fulfillment guidelines for Meesho, Amazon, Flipkart, and Shopify.',
+  },
+];
 
 export function FAQPreview() {
-  const topFaqs = FAQS.slice(0, 5).map((f) => ({
-    id: f.id,
-    title: f.question,
-    content: f.answer,
-  }));
+  const [openId, setOpenId] = useState<string | null>('faq-1');
+
+  const toggle = (id: string) => {
+    setOpenId((prev) => (prev === id ? null : id));
+  };
 
   return (
-    <Section background="subtle">
-      <Container size="narrow">
-        <SectionHeading
-          eyebrow="Got Questions?"
-          title="Frequently Asked Questions"
-          subtitle="Clear answers about how we operate, our pricing, legal compliance coordination, and delivery workflows."
-        />
-
-        <Accordion items={topFaqs} defaultOpenId="faq-1" />
-
-        <div className="mt-8 text-center">
+    <section className="bg-white py-16 sm:py-20 border-b border-slate-100">
+      <Container>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-brand-emerald mb-2">
+              FREQUENTLY ASKED QUESTIONS
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-deep leading-tight">
+              Got Questions? We&apos;ve Got Answers.
+            </h2>
+            <p className="mt-2 text-[#4B5563] text-sm sm:text-base max-w-2xl">
+              Find answers to common questions about our services, process and support.
+            </p>
+          </div>
           <Link
             href="/faq"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-emerald hover:text-brand-deep whitespace-nowrap transition-colors shrink-0"
           >
-            View all frequently asked questions
-            <ArrowRight className="w-4 h-4" />
+            View All FAQs <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        {/* Accordions */}
+        <div className="max-w-4xl mx-auto space-y-3">
+          {FAQS_LIST.map((faq) => {
+            const isOpen = openId === faq.id;
+            return (
+              <div
+                key={faq.id}
+                className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden transition-all duration-200"
+              >
+                <button
+                  type="button"
+                  onClick={() => toggle(faq.id)}
+                  className="w-full flex items-center justify-between p-5 text-left font-bold text-sm sm:text-base text-brand-deep hover:text-brand-emerald transition-colors"
+                  aria-expanded={isOpen}
+                >
+                  <span className="flex items-center gap-3">
+                    <HelpCircle className="w-4 h-4 text-brand-emerald shrink-0" />
+                    {faq.question}
+                  </span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-500 shrink-0 ml-4">
+                    {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  </span>
+                </button>
+
+                {isOpen && (
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#4B5563] leading-relaxed border-t border-slate-100/60 animate-in fade-in duration-200">
+                    <p className="pl-7">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Container>
-    </Section>
+    </section>
   );
 }
-
