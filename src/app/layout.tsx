@@ -72,7 +72,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-white text-neutral-navy antialiased flex flex-col font-sans selection:bg-brand-mint selection:text-brand-deep">
         <Header />
-        <main className="flex-1 pt-18 sm:pt-20">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
         <WhatsAppButton />
       </body>

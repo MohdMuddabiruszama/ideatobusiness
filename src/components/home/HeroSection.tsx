@@ -80,7 +80,7 @@ export function HeroSection() {
   return (
     <>
       {/* ── HERO MAIN SECTION ── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#ECFDF5]/80 via-white to-slate-50/50 pt-10 pb-12 sm:pt-16 sm:pb-16 lg:pt-20 lg:pb-20">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#ECFDF5]/80 via-white to-slate-50/50 pt-5 pb-10 sm:pt-6 sm:pb-14 lg:pt-8 lg:pb-16">
         {/* Soft background glows */}
         <div className="absolute top-0 right-1/4 -z-10 h-96 w-96 rounded-full bg-brand-emerald/10 blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 left-10 -z-10 h-72 w-72 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
