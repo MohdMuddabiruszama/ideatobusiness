@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  COORDINATOR
+}
+
 enum BusinessStage {
   IDEA
   NEW_BUSINESS
@@ -17,10 +23,10 @@ enum EnquiryStatus {
   NEW
   CONTACTED
   QUALIFIED
-  QUOTED
+  QUOTATION_SENT
   CONVERTED
-  NOT_CONVERTED
-  CLOSED
+  LOST
+  ARCHIVED
 }
 
 enum ContactMethod {
@@ -30,12 +36,49 @@ enum ContactMethod {
   ANY
 }
 
+model AdminUser {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String
+  name         String
+  role         AdminRole      @default(ADMIN)
+  isActive     Boolean        @default(true)
+  mfaSecret    String?
+  mfaEnabled   Boolean        @default(false)
+  lastLoginAt  DateTime?
+  sessions     AdminSession[]
+  notes        EnquiryNote[]
+  assignedTo   Enquiry[]
+  auditLogs    AuditLog[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+model AdminSession {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
 model Enquiry {
   id                   String         @id @default(cuid())
+  referenceId          String?        @unique
   fullName             String
   email                String
   phone                String
-  businessStage        BusinessStage
+  businessStage        BusinessStage  @default(IDEA)
   departmentSlug       String
   serviceSlug          String?
   packageSlug          String?
@@ -44,12 +87,14 @@ model Enquiry {
   country              String?
   message              String
   preferredContact     ContactMethod  @default(ANY)
-  consentAccepted      Boolean
+  consentAccepted      Boolean        @default(true)
   privacyNoticeVersion String?        @default("1.0")
   sourcePath           String?
   status               EnquiryStatus  @default(NEW)
-  assignedTo           String?
-  internalNotes        String?
+  assignedToId         String?
+  assignedTo           AdminUser?     @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  isArchived           Boolean        @default(false)
+  notes                EnquiryNote[]
   emailSent            Boolean        @default(false)
   teamNotified         Boolean        @default(false)
   createdAt            DateTime       @default(now())
@@ -58,16 +103,85 @@ model Enquiry {
   @@index([status])
   @@index([createdAt])
   @@index([email])
+  @@index([phone])
   @@index([departmentSlug])
+  @@index([isArchived])
 }
 
-model AdminUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  name         String
-  role         String   @default("admin")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model EnquiryNote {
+  id         String   @id @default(cuid())
+  enquiryId  String
+  enquiry    Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     AdminUser @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorName String
+  content    String
+  createdAt  DateTime @default(now())
+
+  @@index([enquiryId])
+  @@index([createdAt])
 }
 
+model ServiceDepartment {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  name             String
+  shortDescription String
+  description      String
+  iconName         String
+  accentColor      String
+  displayOrder     Int       @default(0)
+  services         Service[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([slug])
+}
+
+model Service {
+  id                      String            @id @default(cuid())
+  slug                    String            @unique
+  departmentId            String
+  department              ServiceDepartment @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentSlug          String
+  name                    String
+  tagline                 String
+  description             String
+  startingPrice           Int?
+  priceDisplay            String            @default("Request Quote")
+  isStartingPriceEstimate Boolean           @default(false)
+  isQuotationRequired     Boolean           @default(false)
+  isActive                Boolean           @default(true)
+  displayOrder            Int               @default(0)
+  whoIsItFor              Json?
+  problemSolved           String?
+  inclusions              Json?
+  requirements            Json?
+  deliveryProcess         Json?
+  iconName                String            @default("Layers")
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  @@index([departmentSlug])
+  @@index([departmentId])
+  @@index([isActive])
+}
+
+model AuditLog {
+  id           String     @id @default(cuid())
+  adminUserId  String?
+  adminUser    AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  adminEmail   String
+  action       String
+  resourceType String
+  resourceId   String?
+  details      Json?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime   @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+  @@index([resourceType])
+  @@index([adminUserId])
+}

@@ -62,6 +62,7 @@ export async function submitEnquiry(input: EnquiryFormInput): Promise<SubmitEnqu
     try {
       const enquiry = await prisma.enquiry.create({
         data: {
+          referenceId: enquiryId,
           fullName: data.fullName,
           email: data.email,
           phone: data.phone,

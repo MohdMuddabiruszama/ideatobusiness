@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
+import { PublicSiteWrapper } from '@/components/layout/PublicSiteWrapper';
 
 export const viewport: Viewport = {
   themeColor: '#0B2D1F',
@@ -71,10 +69,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-neutral-navy antialiased flex flex-col font-sans selection:bg-brand-mint selection:text-brand-deep">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <WhatsAppButton />
+        <PublicSiteWrapper>{children}</PublicSiteWrapper>
       </body>
     </html>
   );
