@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { contactFormSchema, ContactFormInput } from '@/lib/validation/schemas';
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, MessageCircle, ArrowRight, RefreshCw } from 'lucide-react';
+import { SITE_CONFIG } from '@/data/site';
 
 export function ContactForm() {
   const [formData, setFormData] = useState<ContactFormInput>({
@@ -19,6 +20,8 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedRefId, setSubmittedRefId] = useState<string>('');
+  const [submittedName, setSubmittedName] = useState<string>('');
   const [serverError, setServerError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +29,7 @@ export function ContactForm() {
     setErrors({});
     setServerError(null);
 
-    // Validate
+    // Client-side validation
     const result = contactFormSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -39,7 +42,7 @@ export function ContactForm() {
       return;
     }
 
-    // Bot check
+    // Bot honeypot check
     if (formData.honeypot) {
       setIsSubmitted(true);
       return;
@@ -48,7 +51,6 @@ export function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      // In production/dev this will call the enquiries API endpoint
       const res = await fetch('/api/enquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,17 +60,24 @@ export function ContactForm() {
           phone: formData.phone,
           businessStage: 'IDEA',
           departmentSlug: 'business-launch',
+          serviceSlug: formData.subject ? formData.subject.slice(0, 100) : null,
+          businessName: 'Direct Contact Form Lead',
           message: `[Contact Form - ${formData.subject}]: ${formData.message}`,
           preferredContact: 'ANY',
           consentAccepted: true,
+          sourcePath: '/contact',
           honeypot: formData.honeypot,
         }),
       });
 
+      const responseData = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        throw new Error('Failed to submit enquiry. Please try again.');
+        throw new Error(responseData.error || 'Failed to submit enquiry. Please try again.');
       }
 
+      setSubmittedRefId(responseData.enquiryId || 'IB-CONFIRMED');
+      setSubmittedName(formData.fullName);
       setIsSubmitted(true);
     } catch (err: unknown) {
       setServerError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
@@ -77,18 +86,63 @@ export function ContactForm() {
     }
   };
 
+  const handleReset = () => {
+    setFormData({
+      fullName: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+      consentAccepted: true,
+      honeypot: '',
+    });
+    setErrors({});
+    setServerError(null);
+    setIsSubmitted(false);
+    setSubmittedRefId('');
+  };
+
   if (isSubmitted) {
+    const whatsappUrl = `https://wa.me/${SITE_CONFIG.contact.whatsappRaw}?text=${encodeURIComponent(
+      `Hi IDEATOBUSINESS, I just submitted an inquiry (Ref: ${submittedRefId}). My name is ${submittedName}.`
+    )}`;
+
     return (
-      <div className="rounded-2xl border border-brand-200 bg-brand-50/60 p-8 text-center">
-        <CheckCircle2 className="w-12 h-12 text-brand-600 mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-slate-900">Message Received</h3>
-        <p className="mt-2 text-sm text-slate-600 max-w-md mx-auto">
-          Thank you for reaching out. An account specialist will review your message and get in touch within 24 business hours.
-        </p>
-        <div className="mt-6">
-          <Button onClick={() => setIsSubmitted(false)} variant="secondary" size="sm">
-            Send Another Message
-          </Button>
+      <div className="rounded-2xl border border-emerald-200 bg-gradient-to-b from-emerald-50/80 to-white p-6 sm:p-8 text-center space-y-4 shadow-xs">
+        <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+          <CheckCircle2 className="w-8 h-8" />
+        </div>
+
+        <div>
+          <span className="inline-block px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+            Reference ID: {submittedRefId}
+          </span>
+          <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
+            Message Successfully Received!
+          </h3>
+          <p className="mt-2 text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+            Thank you, <strong className="text-slate-900">{submittedName}</strong>. Your enquiry has been securely logged into our system. An advisory specialist will review your request and get in touch within 24 business hours.
+          </p>
+        </div>
+
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>Chat on WhatsApp</span>
+          </a>
+
+          <button
+            onClick={handleReset}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Send Another Message</span>
+          </button>
         </div>
       </div>
     );
@@ -208,4 +262,3 @@ export function ContactForm() {
     </form>
   );
 }
-

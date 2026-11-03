@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db/prisma';
 import { EnquiryDetailManager } from '@/components/admin/EnquiryDetailManager';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function AdminEnquiryDetailPage({
   params,
@@ -15,8 +16,10 @@ export default async function AdminEnquiryDetailPage({
   const { id } = await params;
 
   const [enquiry, adminTeam] = await Promise.all([
-    prisma.enquiry.findUnique({
-      where: { id },
+    prisma.enquiry.findFirst({
+      where: {
+        OR: [{ id }, { referenceId: id }],
+      },
       include: {
         notes: {
           orderBy: { createdAt: 'desc' },
@@ -66,4 +69,3 @@ export default async function AdminEnquiryDetailPage({
     </div>
   );
 }
-

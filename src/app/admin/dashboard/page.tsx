@@ -17,7 +17,11 @@ import {
   Plus,
 } from 'lucide-react';
 
+import { AdminLiveBar } from '@/components/admin/AdminLiveBar';
+
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export default async function AdminDashboardPage() {
   const sessionCtx = await requireAdmin();
@@ -118,6 +122,9 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Real-time Pipeline & Sync Status */}
+      <AdminLiveBar isOfflineMode={data.isOfflineMode} />
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4">

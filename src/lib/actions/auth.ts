@@ -34,9 +34,18 @@ export async function loginAdminAction(formData: FormData): Promise<AuthActionRe
   }
 
   // Lookup admin user
-  const user = await prisma.adminUser.findUnique({
-    where: { email },
-  });
+  let user;
+  try {
+    user = await prisma.adminUser.findUnique({
+      where: { email },
+    });
+  } catch (dbError) {
+    console.error('Database connection error during login:', dbError);
+    return {
+      success: false,
+      error: 'Cannot reach the database server. Please ensure the database service is running.',
+    };
+  }
 
   if (!user || !user.isActive) {
     await recordAuditLog({

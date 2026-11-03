@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/db/prisma';
+import { revalidatePath } from 'next/cache';
 import { enquiryFormSchema, EnquiryFormInput } from '@/lib/validation/schemas';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { appendEnquiryBackup } from '@/lib/db/recovery';
@@ -35,8 +36,8 @@ export async function submitEnquiry(input: EnquiryFormInput): Promise<SubmitEnqu
 
     const data = validated.data;
 
-    // 3. Rate limiting (max 5 submissions per 15 minutes per email)
-    const rateCheck = checkRateLimit(data.email.toLowerCase(), 5, 15 * 60 * 1000);
+    // 3. Rate limiting (max 10 submissions per 15 minutes per email)
+    const rateCheck = checkRateLimit(data.email.toLowerCase(), 10, 15 * 60 * 1000);
     if (!rateCheck.allowed) {
       const minutesRemaining = Math.ceil(rateCheck.resetInMs / 60000);
       return {
@@ -55,14 +56,15 @@ export async function submitEnquiry(input: EnquiryFormInput): Promise<SubmitEnqu
     if (data.preferredContact === 'PHONE') contactMethodEnum = ContactMethod.PHONE;
     if (data.preferredContact === 'WHATSAPP') contactMethodEnum = ContactMethod.WHATSAPP;
 
-    // 5. Save into Database (PostgreSQL)
-    let enquiryId = 'IB-' + Date.now().toString(36).toUpperCase();
+    // 5. Generate human-readable reference ID
+    const referenceId = 'IB-' + Date.now().toString(36).toUpperCase();
     let savedInDb = false;
+    let createdRecordId = '';
 
     try {
       const enquiry = await prisma.enquiry.create({
         data: {
-          referenceId: enquiryId,
+          referenceId,
           fullName: data.fullName,
           email: data.email,
           phone: data.phone,
@@ -80,21 +82,21 @@ export async function submitEnquiry(input: EnquiryFormInput): Promise<SubmitEnqu
           status: 'NEW',
         },
       });
-      enquiryId = enquiry.id;
+      createdRecordId = enquiry.id;
       savedInDb = true;
     } catch (dbError) {
       console.warn('Database connection status (enquiry will be preserved in recovery backup):', dbError);
     }
 
-    // 6. Immutable local backup & recovery log (guarantees zero data loss)
-    await appendEnquiryBackup(enquiryId, data, savedInDb);
+    // 6. Immutable local backup & recovery log (guarantees zero data loss even if DB is offline)
+    await appendEnquiryBackup(referenceId, data, savedInDb);
 
     // 7. Email notifications: Admin notification + Customer confirmation
     let teamNotified = false;
     let customerNotified = false;
 
     if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.includes('sample')) {
-      const fromEmail = process.env.NOTIFICATION_EMAIL_FROM || 'IDEATOBUSINESS <onboarding@resend.dev>';
+      const fromEmail = process.env.NOTIFICATION_EMAIL_FROM || 'IDEATOBUSINESS <notifications@ideatobusiness.com>';
 
       try {
         // A. Admin notification email
@@ -107,10 +109,10 @@ export async function submitEnquiry(input: EnquiryFormInput): Promise<SubmitEnqu
           body: JSON.stringify({
             from: fromEmail,
             to: process.env.NOTIFICATION_EMAIL_TO || 'team@ideatobusiness.com',
-            subject: `[New Lead #${enquiryId.slice(-6)}] ${data.fullName} — ${data.departmentSlug}`,
+            subject: `[New Lead #${referenceId}] ${data.fullName} — ${data.departmentSlug}`,
             text: `NEW BUSINESS ENQUIRY RECEIVED
 ---------------------------------------
-Reference ID: ${enquiryId}
+Reference ID: ${referenceId}
 Full Name: ${data.fullName}
 Email: ${data.email}
 Phone: ${data.phone}
@@ -144,12 +146,12 @@ Action Required: Follow up within 24 business hours.`,
           body: JSON.stringify({
             from: fromEmail,
             to: data.email,
-            subject: `We've received your enquiry! (Ref: #${enquiryId.slice(-6)}) — IDEATOBUSINESS`,
+            subject: `We've received your enquiry! (Ref: #${referenceId}) — IDEATOBUSINESS`,
             text: `Dear ${data.fullName},
 
 Thank you for reaching out to IDEATOBUSINESS.
 
-We have received your business enquiry (Reference ID: ${enquiryId}).
+We have received your business enquiry (Reference ID: ${referenceId}).
 
 What happens next?
 1. Requirement Review: Our team is evaluating your requested services (${data.departmentSlug}${data.serviceSlug ? ` - ${data.serviceSlug}` : ''}).
@@ -170,10 +172,10 @@ The IDEATOBUSINESS Team
       }
 
       // Update email flags in database if saved
-      if (savedInDb) {
+      if (savedInDb && createdRecordId) {
         try {
           await prisma.enquiry.update({
-            where: { id: enquiryId },
+            where: { id: createdRecordId },
             data: { emailSent: customerNotified, teamNotified: teamNotified },
           });
         } catch {
@@ -182,7 +184,16 @@ The IDEATOBUSINESS Team
       }
     }
 
-    return { success: true, enquiryId };
+    // Invalidate caches across the admin dashboard, enquiries, and reports
+    try {
+      revalidatePath('/admin/dashboard');
+      revalidatePath('/admin/enquiries');
+      revalidatePath('/admin/reports');
+    } catch {
+      // non-critical if invoked outside request scope
+    }
+
+    return { success: true, enquiryId: referenceId };
   } catch (error: unknown) {
     console.error('Enquiry submission server error:', error);
     return {

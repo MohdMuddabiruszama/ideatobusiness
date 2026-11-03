@@ -14,10 +14,15 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
+import { syncPendingBackupEnquiries } from '@/lib/db/recovery';
+
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export default async function AdminReportsPage() {
   await requireAdmin();
+  await syncPendingBackupEnquiries().catch(() => {});
 
   const [totalCount, statusGroups, stageGroups, deptGroups, contactGroups] = await Promise.all([
     prisma.enquiry.count(),
